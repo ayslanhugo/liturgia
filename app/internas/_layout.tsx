@@ -21,7 +21,7 @@ export default function Layout() {
             tabBarInactiveTintColor: '#FFF'
       }}>
           
-      <Tabs.Screen name="tasks" options={{
+      <Tabs.Screen name="liturgia" options={{
         headerTitle: "Liturgia Diaria",
         tabBarLabel: "Liturgia",
         tabBarIcon: ({ color }) => (

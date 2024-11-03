@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "pra-fazer-app",
-    "slug": "pra-fazer-app",
+    "name": "liturgia",
+    "slug": "liturgia",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

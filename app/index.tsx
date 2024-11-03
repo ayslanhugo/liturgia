@@ -29,7 +29,7 @@ export default function Index() {
     setEmail("");
     setPassword("");
     setErrorLogin("");
-    router.push("/internas/tasks");
+    router.push("/internas/liturgia");
   })
   .catch((error) => {
     const errorCode = error.code;
@@ -89,6 +89,9 @@ const styles = StyleSheet.create({
     },
     logo: {
         marginBottom: 3,
+        width: 400,
+        height: 400,
+        borderWidth: 0,
     },
     alert: {
         fontSize: 18,
