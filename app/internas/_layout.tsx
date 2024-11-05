@@ -8,9 +8,9 @@ export default function Layout() {
     <Tabs
       screenOptions={{
           // Cor do cabecalho
-            headerStyle: {backgroundColor: "#000062" },
+            headerStyle: {backgroundColor: "#212160" },
           // Cor da tab bar
-            tabBarStyle: {backgroundColor: "#070A52"},
+            tabBarStyle: {backgroundColor: "#212160"},
           // Centraliza o titulo
             headerTitleAlign: 'center',
           // Cor do titulo
@@ -18,14 +18,14 @@ export default function Layout() {
           // Define a cor do menu ativo na tab bar
             tabBarActiveTintColor: "#F60",
           //Cor do icone inativo
-            tabBarInactiveTintColor: '#FFF'
+            tabBarInactiveTintColor: '#6c757d'
       }}>
           
       <Tabs.Screen name="liturgia" options={{
         headerTitle: "Liturgia Diaria",
         tabBarLabel: "Liturgia",
         tabBarIcon: ({ color }) => (
-          <MaterialCommunityIcons name="check-circle-outline" 
+          <MaterialCommunityIcons name="book" 
           color={ color } size={32} /> 
         )
       }}/>

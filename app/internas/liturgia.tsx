@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import axios from 'axios';
 
-// Definição da interface Liturgia
 interface Liturgia {
   data: string;
   liturgia: string;
@@ -20,7 +19,7 @@ interface Liturgia {
     referencia: string;
     titulo: string;
     texto: string;
-  } | string; // Caso não haja segunda leitura
+  } | string;
   salmo: {
     referencia: string;
     refrão: string;
@@ -38,14 +37,12 @@ interface Liturgia {
   };
 }
 
-// Definindo a interface das props do TabContent
 interface TabContentProps {
   title: string;
   subtitle: string;
   content: string;
 }
 
-// Função para buscar leituras diárias
 const fetchDailyReadings = async (): Promise<Liturgia | null> => {
   try {
     const response = await axios.get<Liturgia>('https://liturgia.up.railway.app/');
@@ -56,24 +53,24 @@ const fetchDailyReadings = async (): Promise<Liturgia | null> => {
   }
 };
 
-// Componente para conteúdo da aba
 const TabContent: React.FC<TabContentProps> = ({ title, subtitle, content }) => (
   <View style={styles.tabContent}>
     <Text style={styles.title}>{title}</Text>
-    <Text style={styles.text}>{subtitle}</Text>
+    <Text style={styles.subtitle}>{subtitle}</Text>
     <Text style={styles.liturgia}>{content}</Text>
   </View>
 );
 
-// Componente principal
 const TabComponent = () => {
   const [index, setIndex] = useState(0);
   const [readings, setReadings] = useState<Liturgia | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadReadings = async () => {
       const data = await fetchDailyReadings();
       setReadings(data);
+      setLoading(false);
     };
     loadReadings();
   }, []);
@@ -87,13 +84,8 @@ const TabComponent = () => {
     ),
     segunda: () => {
       const segunda = readings?.segundaLeitura;
-      const segundaContent = typeof segunda === 'string' 
-        ? segunda 
-        : segunda ? `${segunda.titulo}\n${segunda.texto}` : '';
-
-      return (
-        <TabContent title="2ª Leitura" subtitle="Segunda Leitura" content={segundaContent} />
-      );
+      const segundaContent = typeof segunda === 'string' ? segunda : segunda ? `${segunda.titulo}\n${segunda.texto}` : '';
+      return <TabContent title="2ª Leitura" subtitle="Segunda Leitura" content={segundaContent} />;
     },
     evangelho: () => readings && (
       <TabContent title="Evangelho" subtitle="Evangelho do Dia" content={`${readings.evangelho.titulo}\n${readings.evangelho.texto}`} />
@@ -102,10 +94,14 @@ const TabComponent = () => {
 
   return (
     <View style={styles.container}>
-      {readings ? (
+      {loading ? (
+        <ActivityIndicator size="large" color="#007bff" style={styles.loadingIndicator} />
+      ) : readings ? (
         <>
           <Text style={styles.liturgia}>{readings.liturgia}</Text>
-          <Text style={styles.cor}>Cor: {readings.cor}</Text>
+          <Text style={[styles.cor, { color: readings.cor === 'vermelho' ? '#dc3545' : '#6c757d' }]}>
+            Cor: {readings.cor}
+          </Text>
           <TabView
             navigationState={{
               index,
@@ -144,13 +140,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     padding: 20,
+    backgroundColor: '#212160', // Adiciona a cor de fundo desejada
+    
   },
   tabContent: {
     padding: 20,
     flex: 1,
     justifyContent: 'center',
     backgroundColor: '#ffffff',
-    borderRadius: 82,
+    borderRadius: 100,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -165,29 +163,35 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     color: '#007bff',
+    textAlign: 'center',
   },
-  text: {
-    fontSize: 24,
+  subtitle: {
+    fontSize: 18,
     marginBottom: 20,
     color: '#333',
+    textAlign: 'center',
   },
   liturgia: {
     fontSize: 20,
     marginVertical: 5,
     marginBottom: 15,
     fontStyle: 'italic',
-    color: '#555',
+    color: '#6c757d',
     textAlign: 'justify',
   },
   cor: {
     fontSize: 16,
     marginBottom: 15,
+    fontStyle: 'italic',
     color: '#6c757d',
   },
   errorMessage: {
     fontSize: 16,
     color: 'red',
     textAlign: 'center',
+    marginTop: 20,
+  },
+  loadingIndicator: {
     marginTop: 20,
   },
 });
