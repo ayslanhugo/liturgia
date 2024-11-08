@@ -1,5 +1,5 @@
 import { router, useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { auth } from '../scripts/firebase-config';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image } from "react-native";
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -19,33 +19,29 @@ export default function Index() {
             setErrorLogin("");
             login();
         }
-    }
+    };
 
     const login = () => {
         signInWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
-    // Signed in 
-    const user = userCredential.user;
-    setEmail("");
-    setPassword("");
-    setErrorLogin("");
-    router.push("/internas/liturgia");
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    setErrorLogin(errorMessage);
-  });
-    }
+            .then((userCredential) => {
+                const user = userCredential.user;
+                setEmail("");
+                setPassword("");
+                setErrorLogin("");
+                router.push("/internas/liturgia");
+            })
+            .catch((error) => {
+                setErrorLogin(error.message);
+            });
+    };
 
     return (
         <View style={styles.container}>
             <Image style={styles.logo} source={require('../assets/images/logo.png')} />
 
-            {errorLogin != null && (
+            {errorLogin && (
                 <Text style={styles.alert}>{errorLogin}</Text>
-            )} 
-            
+            )}
 
             <TextInput
                 style={styles.input}
@@ -62,17 +58,13 @@ export default function Index() {
                 onChangeText={setPassword}
             />
 
-            <TouchableOpacity style={styles.button}
-                onPress={validarCampos}
-            >
+            <TouchableOpacity style={styles.button} onPress={validarCampos}>
                 <Text style={styles.textButton}>Entrar</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-                style={styles.buttonCreate}
-                onPress={() => router.push('/user_create')}
-            >
-                <Text style={styles.buttonCreateText}>Criar Usuário</Text>
+            <TouchableOpacity style={styles.buttonCreate} onPress={() => router.push('/user_create')}>
+                <Text style={styles.TextInicial}>Novo por aqui?</Text>
+                <Text style={styles.buttonCreateText}>Cadastre-se!</Text>
             </TouchableOpacity>
         </View>
     );
@@ -85,7 +77,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        width: '100%'
+        width: '100%',
     },
     logo: {
         marginBottom: 3,
@@ -100,41 +92,46 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     input: {
-    fontSize: 18,
-    borderRadius: 40, // Bordas arredondadas
-    backgroundColor: '#FFF',
-    padding: 8, // Reduz o padding para um tamanho menor
-    marginBottom: 20,
-    width: '100%', // Reduz a largura da caixa de texto
-    borderWidth: 1, // Adiciona uma borda fina
-    borderColor: '#DDD', // Define uma cor suave para a borda
-    textAlign: 'center',
+        fontSize: 18,
+        borderRadius: 40,
+        backgroundColor: '#FFF',
+        padding: 8,
+        marginBottom: 20,
+        width: '100%',
+        borderWidth: 1,
+        borderColor: '#DDD',
+        textAlign: 'center',
     },
-
     button: {
-        backgroundColor: '#000062',
+        backgroundColor: '#f68529',
         padding: 10,
         borderRadius: 40,
-        borderWidth: 1,
         borderColor: '#FFFFFF',
-        width: '50%',
-        marginBottom: 19 // Espaçamento entre os botões
+        width: '100%',
+        marginBottom: 19,
     },
     textButton: {
         fontSize: 24,
         textAlign: 'center',
-        color: '#fff'
+        color: '#fff',
     },
     buttonCreate: {
         padding: 10,
-        borderWidth: 1,
         borderColor: '#FFFFFF',
         borderRadius: 40,
-        width: '50%'
+        width: '50%',
     },
     buttonCreateText: {
         fontSize: 18,
         textAlign: 'center',
-        color: '#fff'
-    }
-})
+        color: '#fff',
+        textDecorationLine: 'underline', // Aplique o sublinhado diretamente no texto
+    },
+    TextInicial: {
+        fontSize: 18,
+        textAlign: 'center',
+        color: '#fff',
+    },
+});
+
+export default Index;
