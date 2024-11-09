@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, ActivityIndicator, ScrollView } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import axios from 'axios';
 
@@ -7,7 +7,6 @@ interface Liturgia {
   data: string;
   liturgia: string;
   cor: string;
-  dia: string;
   oferendas: string;
   comunhao: string;
   primeiraLeitura: {
@@ -54,11 +53,11 @@ const fetchDailyReadings = async (): Promise<Liturgia | null> => {
 };
 
 const TabContent: React.FC<TabContentProps> = ({ title, subtitle, content }) => (
-  <View style={styles.tabContent}>
+  <ScrollView contentContainerStyle={styles.tabContent}>
     <Text style={styles.title}>{title}</Text>
     <Text style={styles.subtitle}>{subtitle}</Text>
     <Text style={styles.liturgia}>{content}</Text>
-  </View>
+  </ScrollView>
 );
 
 const TabComponent = () => {
@@ -74,6 +73,13 @@ const TabComponent = () => {
     };
     loadReadings();
   }, []);
+
+  const routes = [
+    { key: 'primeira', title: '1ª Leitura' },
+    { key: 'salmo', title: 'Salmo' },
+    readings?.segundaLeitura ? { key: 'segunda', title: '2ª Leitura' } : null,
+    { key: 'evangelho', title: 'Evangelho' },
+  ].filter(Boolean);
 
   const renderScene = SceneMap({
     primeira: () => readings && (
@@ -98,19 +104,23 @@ const TabComponent = () => {
         <ActivityIndicator size="large" color="#007bff" style={styles.loadingIndicator} />
       ) : readings ? (
         <>
-          <Text style={styles.liturgia}>{readings.liturgia}</Text>
-          <Text style={[styles.cor, { color: readings.cor === 'vermelho' ? '#dc3545' : '#6c757d' }]}>
-            Cor: {readings.cor}
-          </Text>
+          {/* Exibe a Data com cor diferente */}
+          <View style={styles.dataContainer}>
+            <Text style={styles.data}>{readings.data}</Text>
+          </View>
+
+          {/* Conteúdo da liturgia com estilo separado */}
+          <View style={styles.liturgiaContainer}>
+            <Text style={styles.liturgia}>{readings.liturgia}</Text>
+            <Text style={[styles.cor, { color: readings.cor === 'vermelho' ? '#dc3545' : '#6c757d' }]}>
+              Cor: {readings.cor}
+            </Text>
+          </View>
+
           <TabView
             navigationState={{
               index,
-              routes: [
-                { key: 'primeira', title: '1ª Leitura' },
-                { key: 'salmo', title: 'Salmo' },
-                { key: 'segunda', title: '2ª Leitura' },
-                { key: 'evangelho', title: 'Evangelho' },
-              ],
+              routes: routes,
             }}
             renderScene={renderScene}
             onIndexChange={setIndex}
@@ -139,16 +149,42 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-start',
-    padding: 20,
-    backgroundColor: '#212160', // Adiciona a cor de fundo desejada
-    
+    paddingHorizontal: 16,
+    paddingTop: 10,
+    backgroundColor: '#212160',
+  },
+  dataContainer: {
+    marginBottom: 10,
+  },
+  data: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#f8f9fa',
+    textAlign: 'center',
+  },
+  liturgiaContainer: {
+    marginBottom: 20,
+  },
+  liturgia: {
+    fontSize: 22,
+    marginVertical: 5,
+    marginBottom: 20,
+    fontStyle: 'italic',
+    color: '#000000',
+    textAlign: 'center',
+  },
+  cor: {
+    fontSize: 18,
+    marginBottom: 3,
+    fontStyle: 'italic',
+    textAlign: 'center',
   },
   tabContent: {
     padding: 20,
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     backgroundColor: '#ffffff',
-    borderRadius: 100,
+    borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -159,31 +195,17 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   title: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 8,
     color: '#007bff',
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 18,
-    marginBottom: 20,
+    marginBottom: 16,
     color: '#333',
     textAlign: 'center',
-  },
-  liturgia: {
-    fontSize: 20,
-    marginVertical: 5,
-    marginBottom: 15,
-    fontStyle: 'italic',
-    color: '#6c757d',
-    textAlign: 'justify',
-  },
-  cor: {
-    fontSize: 16,
-    marginBottom: 15,
-    fontStyle: 'italic',
-    color: '#6c757d',
   },
   errorMessage: {
     fontSize: 16,
