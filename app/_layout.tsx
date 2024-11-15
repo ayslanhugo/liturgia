@@ -1,26 +1,54 @@
-import { Stack } from "expo-router";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Tabs } from "expo-router";
 import React from "react";
 
-export default function RootLayout() {
+export default function Layout() {
   return (
-    <Stack
+    <Tabs
       screenOptions={{
-            headerStyle: {backgroundColor: "#000062" },
-            headerShadowVisible: false
-      }} >
-          
-      <Stack.Screen name="index" options={{
-        headerShown: false
-      }}/>
+        headerStyle: { backgroundColor: "#212160" },
+        tabBarStyle: { backgroundColor: "#212160" },
+        headerTitleAlign: "center",
+        headerTintColor: "#FFF",
+        tabBarActiveTintColor: "#F60",
+        tabBarInactiveTintColor: "#6c757d",
+      }}
+    >
+      {/* Aba Liturgia */}
+      <Tabs.Screen
+        name="index"
+        options={{
+          headerTitle: "Liturgia do Dia",
+          tabBarLabel: "Liturgia",
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="book" color={color} size={32} />
+          ),
+        }}
+      />
 
-      <Stack.Screen name="user_create" options={{
-        headerTitle: ''
-      }}/>
-      <Stack.Screen name="internas" options={{
-        headerShown: false,
-        headerTitle: ''
-      }}/>
+      {/* Aba Usuário */}
+      <Tabs.Screen
+        name="user"
+        options={{
+          headerTitle: "Dados do Usuário",
+          tabBarLabel: "Usuário",
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="account" color={color} size={32} />
+          ),
+        }}
+      />
 
-    </Stack>
+      {/* Aba Sobre */}
+      <Tabs.Screen
+        name="about"
+        options={{
+          headerTitle: "Sobre o Aplicativo",
+          tabBarLabel: "Sobre",
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="information-outline" color={color} size={32} />
+          ),
+        }}
+      />
+    </Tabs>
   );
 }
